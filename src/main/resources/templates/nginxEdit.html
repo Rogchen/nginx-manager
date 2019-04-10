@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>nginx 编辑页面</title>
+</head>
+<body>
+<form method="post" action="updateConf">
+    <div>
+        编码格式：
+        <input type="radio" name="charsetName" checked value="utf-8"/>utf-8
+        <input type="radio" name="charsetName" value="gbk"/>gbk
+        <input type="radio" name="charsetName" value="ansi"/>ansi
+    </div>
+    <div>
+        文件根目录：<input name="path" value="D:\tool\nginx\" placeholder="执行程序路径"/>
+        <input type="text" name="defautPath" value="D:\tool\nginx\conf\nginx.conf">
+        <button type="button" onclick="getconf();">获取内容</button>
+    </div>
+    <div>
+        nginx 配置信息<textarea name="conf" style="width: 500px;height: 600px;" th:text="${nginxconf}"></textarea>
+    </div>
+    <button type="submit">提交</button>
+</form>
+<script th:src="@{/assets/js/jquery-1.12.3.min.js}"></script>
+<script>
+    function getconf() {
+        var charsetName = $("input[name='charsetName']:checked").val();
+        var defautPath = $("input[name='defautPath']").val();
+        $.ajax({
+            url: "getConf",
+            type: "post",
+            data:{defautPath:defautPath,charsetName:charsetName},
+            success: function (result) {
+               $("textarea[name='conf']").text(result);
+            }
+        });
+    }
+</script>
+</body>
+</html>
