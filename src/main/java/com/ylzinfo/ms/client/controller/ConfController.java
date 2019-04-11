@@ -20,7 +20,7 @@ import java.io.*;
 @Slf4j
 public class ConfController {
 
-    @GetMapping(value = {"/", "editNginx"})
+    @GetMapping(value = {"/index", "editNginx"})
     public String edit() throws IOException {
         return "nginxEdit";
     }
@@ -46,7 +46,6 @@ public class ConfController {
     @PostMapping("updateConf")
     @ResponseBody
     public String updateConf(String path, String defautPath, String charsetName, String conf) throws InterruptedException, IOException {
-        System.out.println(conf);
         charsetName = StringUtils.isEmpty(charsetName) ? "utf-8" : charsetName;
         File file = new File(defautPath);
         if (file.exists()) {
@@ -63,7 +62,7 @@ public class ConfController {
         if (os.toLowerCase().startsWith("win")) {
             cmd = "cmd /c \"d: && cd " + path + " && nginx -s reload\"";
         } else {    //linux
-            cmd = "/bin/bash -c cd "+path;
+            cmd = "/bin/bash -c \"cd "+path+" && nginx -s reload\"";
         }
         String rt = exec(cmd);
         log.info("输出控制台返回：" + rt);
@@ -71,7 +70,7 @@ public class ConfController {
     }
 
 
-    public String exec(String command) throws InterruptedException {
+    private String exec(String command) throws InterruptedException {
         String returnString = "";
         Process pro = null;
         Runtime runTime = Runtime.getRuntime();

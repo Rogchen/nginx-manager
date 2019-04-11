@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>nginx 编辑页面</title>
+    <style>
+    </style>
+</head>
+<body>
+<form method="post" action="/shell/excute">
+    <div id="loading"><img th:src="@{/images/loading.gif}"/></div>
+    <div>
+        服务器ip：<input name="host" value="" placeholder="host"/>
+        服务器端口：<input name="port" value="" placeholder="port"/>
+        服务器账号：<input name="username" value="" placeholder="host"/>
+        服务器密码：<input name="password" value="" placeholder="host"/>
+        <input type="button" value="测试连接" onclick="loginTest();"/>
+    </div>
+    <div>
+        编码格式：
+        <input type="radio" name="charsetName" checked value="utf-8"/>utf-8
+        <input type="radio" name="charsetName" value="gbk"/>gbk
+        <input type="radio" name="charsetName" value="ansi"/>ansi
+    </div>
+    <div>
+        运行程序：<input name="path" value="" placeholder="执行程序路径"/>
+        配置文件：<input type="text" name="defautPath" value="">
+        <button type="button" onclick="getconf();">获取内容</button>
+    </div>
+    <div style="width: 550px;height: 600px;">
+        <span style="float:left;"> nginx 配置信息：</span>
+        <textarea name="conf" style="width: 500px;height: 600px;float:right;"></textarea>
+    </div>
+    <div style="margin: 10px;">
+        <input style="text-content: center;" type="button" onclick="saveConf();" value="提交">
+        <button style="text-content: center;" type="submit">执行</button>
+
+    </div>
+</form>
+<script th:src="@{/assets/js/jquery-1.12.3.min.js}"></script>
+<script>
+    function loginTest() {
+        var host = $("form input[name='host']").val();
+        var port = $("form input[name='port']").val();
+        var username = $("form input[name='username']").val();
+        var password = $("form input[name='password']").val();
+        $("#loading").show();
+        $.ajax({
+            url: "/shell/loginTest",
+            type: "post",
+            data: {
+                host: host,
+                port: port,
+                username: username,
+                password: password
+            },
+            success: function (result) {
+                alert(result);
+            }
+        });
+    }
+
+    function getconf() {
+        var charsetName = $("form input[name='charsetName']:checked").val();
+        var defautPath = $("form input[name='defautPath']").val();
+        var host = $("form input[name='host']").val();
+        var port = $("form input[name='port']").val();
+        var username = $("form input[name='username']").val();
+        var password = $("form input[name='password']").val();
+        $.ajax({
+            url: "/shell/getConf",
+            type: "post",
+            data: {
+                defautPath: defautPath,
+                charsetName: charsetName,
+                host: host,
+                port: port,
+                username: username,
+                password: password
+            },
+            success: function (result) {
+                console.log(result);
+                $("form textarea[name='conf']").val(result);
+            }
+        });
+    }
+
+    function saveConf() {
+        var charsetName = $("form input[name='charsetName']:checked").val();
+        var defautPath = $("form input[name='defautPath']").val();
+        var conf = $("form textarea[name='conf']").val();
+        var host = $("form input[name='host']").val();
+        var port = $("form input[name='port']").val();
+        var username = $("form input[name='username']").val();
+        var password = $("form input[name='password']").val();
+        $.ajax({
+            url: "/shell/saveConf",
+            type: "post",
+            data: {
+                defautPath: defautPath,
+                charsetName: charsetName,
+                host: host,
+                port: port,
+                username: username,
+                password: password,
+                conf: conf
+            },
+            success: function (result) {
+                alert(result);
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
