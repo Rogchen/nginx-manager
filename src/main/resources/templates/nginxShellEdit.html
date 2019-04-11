@@ -5,11 +5,19 @@
     <meta charset="UTF-8">
     <title>nginx 编辑页面</title>
     <style>
+        #loading {
+            position: absolute;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: #eee;
+        }
     </style>
 </head>
 <body>
 <form method="post" action="/shell/excute">
-    <div id="loading"><img th:src="@{/images/loading.gif}"/></div>
+    <div id="loading" style="display: none;"><img th:src="@{/assets/img/loading.png}"/></div>
     <div>
         服务器ip：<input name="host" value="" placeholder="host"/>
         服务器端口：<input name="port" value="" placeholder="port"/>
@@ -56,12 +64,17 @@
                 password: password
             },
             success: function (result) {
+                $("#loading").attr("style", "display: none;");
                 alert(result);
+            },
+            error: function (result) {
+                $("#loading").attr("style", "display: none;");
             }
         });
     }
 
     function getconf() {
+        $("#loading").show();
         var charsetName = $("form input[name='charsetName']:checked").val();
         var defautPath = $("form input[name='defautPath']").val();
         var host = $("form input[name='host']").val();
@@ -80,13 +93,17 @@
                 password: password
             },
             success: function (result) {
-                console.log(result);
+                $("#loading").attr("style", "display: none;");
                 $("form textarea[name='conf']").val(result);
+            },
+            error: function (result) {
+                $("#loading").attr("style", "display: none;");
             }
         });
     }
 
     function saveConf() {
+        $("#loading").show();
         var charsetName = $("form input[name='charsetName']:checked").val();
         var defautPath = $("form input[name='defautPath']").val();
         var conf = $("form textarea[name='conf']").val();
@@ -107,7 +124,11 @@
                 conf: conf
             },
             success: function (result) {
+                $("#loading").attr("style", "display: none;");
                 alert(result);
+            },
+            error: function (result) {
+                $("#loading").attr("style", "display: none;");
             }
         });
     }
